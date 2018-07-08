@@ -12,6 +12,7 @@ type AppDelegate () =
 
     override this.FinishedLaunching (app, options) =
         Forms.Init()
+//        do Application.Current.Properties.["PHONE"] <- number
         this.LoadApplication (new AccesoPrivadaLaurel.App())
         base.FinishedLaunching(app, options)
 

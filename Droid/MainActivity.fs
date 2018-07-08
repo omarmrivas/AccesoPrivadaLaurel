@@ -17,6 +17,9 @@ type MainActivity() =
     inherit FormsAppCompatActivity()
 
     override this.OnCreate (bundle: Bundle) =
+        let mTelephonyMgr = downcast Application.Context.GetSystemService(Android.Content.Context.TelephonyService) : Android.Telephony.TelephonyManager
+        let number = mTelephonyMgr.Line1Number
+
         FormsAppCompatActivity.TabLayoutResource <- Resources.Layout.Tabbar
         FormsAppCompatActivity.ToolbarResource <- Resources.Layout.Toolbar
 
@@ -24,4 +27,4 @@ type MainActivity() =
 
         Xamarin.Forms.Forms.Init (this, bundle)
 
-        this.LoadApplication (new AccesoPrivadaLaurel.App ())
+        this.LoadApplication (new AccesoPrivadaLaurel.App (number))
