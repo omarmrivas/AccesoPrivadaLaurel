@@ -61,7 +61,7 @@ module Http =
         try
             let response = request.GetResponse() :?> HttpWebResponse
             read_response response
-        with | :? WebException -> ERROR
+        with | :? WebException as e -> ERROR + ": " + e.Message
 
     let timeout time def f v =
      try
@@ -99,7 +99,7 @@ type MainPage(number : string) as this =
         Thread(fun () -> let response = Http.timeout requestTimeOut "Timeout!" (Http.request_action number) Model.door.Exit
                          do Device.BeginInvokeOnMainThread(fun () ->
                                     do showStatus response)
-                         if response = Http.ERROR
+                         if response.StartsWith(Http.ERROR)
                          then Device.BeginInvokeOnMainThread(fun () ->
                                     do exitButton.IsEnabled <- true)
                          else do Thread.Sleep(delay)
@@ -116,7 +116,7 @@ type MainPage(number : string) as this =
         Thread(fun () -> let response = Http.timeout requestTimeOut "Timeout!" (Http.request_action number) Model.door.Enter
                          do Device.BeginInvokeOnMainThread(fun () ->
                                     do showStatus response)
-                         if response = Http.ERROR
+                         if response.StartsWith(Http.ERROR)
                          then Device.BeginInvokeOnMainThread(fun () ->
                                     do enterButton.IsEnabled <- true)
                          else do Thread.Sleep(delay)
