@@ -73,7 +73,7 @@ module Http =
         else (fun (x, y) -> x) task.Result
      with e -> def
 
-type MainPage(number : string) as this =
+type MainPage(number : string, connect : unit -> unit) as this =
     inherit ContentPage()
 
 //    let _ = base.LoadFromXaml(typeof<MainPage>)
@@ -106,7 +106,8 @@ type MainPage(number : string) as this =
                               Device.BeginInvokeOnMainThread(fun () ->
                               do exitButton.IsEnabled <- true)).Start()
 
-    do exitButton.Clicked.Add(fun _ -> do exitButton.IsEnabled <- false
+    do exitButton.Clicked.Add(fun _ -> do connect ()
+                                       do exitButton.IsEnabled <- false
                                        waitExit ())
 
     // Create the first Button and attach Clicked handler.
@@ -123,7 +124,8 @@ type MainPage(number : string) as this =
                               Device.BeginInvokeOnMainThread(fun () ->
                               do enterButton.IsEnabled <- true)).Start()
 
-    do enterButton.Clicked.Add(fun _ -> do enterButton.IsEnabled <- false
+    do enterButton.Clicked.Add(fun _ -> do connect ()
+                                        do enterButton.IsEnabled <- false
                                         waitEnter ())
 
     // Assemble the page.
@@ -136,7 +138,8 @@ type MainPage(number : string) as this =
     let mainStack = StackLayout(BackgroundColor = Color.Black)
     do mainStack.Children.Add enterButton
     do mainStack.Children.Add exitButton
-
     do base.Content <- mainStack
 
-            
+(*    override this.OnAppearing() =
+        base.OnAppearing()
+        do this.DisplayAlert("Status", f(), "OK") |> ignore*)

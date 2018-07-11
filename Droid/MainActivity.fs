@@ -27,25 +27,23 @@ type MainActivity() =
 
         let connect () =
             let wifiManager = downcast Android.App.Application.Context.GetSystemService(Context.WifiService) : WifiManager
+            let formattedSsid = "\"" + SSID + "\""
+
             let SSID' = wifiManager.ConnectionInfo.SSID
+            if SSID' = formattedSsid
+            then ()
+            else let formattedPassword = "\"" + PASSWORD + "\""
 
-(*            let formattedSsid = "\"{" + SSID + "\"}"
-            let formattedPassword = "\"{" + PASSWORD + "\"}"
-            let wifiConfig = new WifiConfiguration(Ssid = formattedSsid,
-                                                   PreSharedKey = formattedPassword)
-            let formattedSsid = "\"{" + SSID + "\"}"
-            let formattedPassword = "\"{" + PASSWORD + "\"}"
-            let wifiConfig = new WifiConfiguration(Ssid = formattedSsid,
-                                                   PreSharedKey = formattedPassword)
+                 let wifiConfig = new WifiConfiguration(Ssid = formattedSsid,
+                                                        PreSharedKey = formattedPassword)
 
-            let addNetwork = wifiManager.AddNetwork(wifiConfig)
+                 let addNetwork = wifiManager.AddNetwork(wifiConfig)
 
-            match wifiManager.ConfiguredNetworks.[addNetwork] with
-            | null -> ()
-            | network -> wifiManager.Disconnect() |> ignore
-                         let enableNetwork = wifiManager.EnableNetwork(network.NetworkId, true)
-                         ()*)
-            ()
+                 match wifiManager.ConfiguredNetworks.[addNetwork] with
+                 | null -> ()
+                 | network -> wifiManager.Disconnect() |> ignore
+                              let enableNetwork = wifiManager.EnableNetwork(network.NetworkId, true)
+                              ()
 
         FormsAppCompatActivity.TabLayoutResource <- Resources.Layout.Tabbar
         FormsAppCompatActivity.ToolbarResource <- Resources.Layout.Toolbar
@@ -54,4 +52,4 @@ type MainActivity() =
 
         Xamarin.Forms.Forms.Init (this, bundle)
 
-        this.LoadApplication (new AccesoPrivadaLaurel.App (number))
+        this.LoadApplication (new AccesoPrivadaLaurel.App (number, connect))
